@@ -122,50 +122,28 @@ class RecipeCard extends HTMLElement {
     organization.innerHTML = getOrganization(data);
     card.appendChild(organization);
 
-    let div = document.createElement('div');
-    div.className = "rating";
-    card.appendChild(div);
+    let rating = searchForKey(data, 'ratingValue');
+    let ratingCounts = searchForKey(data, 'ratingCount');
+    let ratingContainer = document.createElement('div');
+    ratingContainer.className = 'rating';
 
-    let ratingValue = searchForKey(data, "ratingValue");
-    if (searchForKey(data, 'ratingValue') == undefined) {
-      ratingValue.innerHTML = "No Reviews";
-    } else {
-      ratingValue.innerHTML = searchForKey(data, 'ratingValue');
-    }
-    div.appendChild(ratingValue);
-
-    let ratingImg = document.createElement("img");
-
-    if(ratingValue < 0.5){
-      ratingImg.src = "assets/images/icons/0-star.svg";
-      ratingImg.alt = "0 star";
-    }else if(ratingValue < 1.5){
-      ratingImg.src = "assets/images/icons/1-star.svg";
-      ratingImg.alt = "1 star";
-    }else if(ratingValue < 2.5){
-      ratingImg.src = "assets/images/icons/2-star.svg";
-      ratingImg.alt = "2 star";
-    }else if(ratingValue < 3.5){
-      ratingImg.src = "assets/images/icons/3-star.svg";
-      ratingImg.alt = "3 star";
-    }else if (ratingValue < 4.5){
-      ratingImg.src = "assets/images/icons/4-star.svg";
-      ratingImg.alt = "4 star";
-    }else if (ratingValue == 5){
-      ratingImg.src = "assets/images/icons/5-star.svg";
-      ratingImg.alt = "5 star";
-    }
-
-    div.appendChild(ratingImg);
-
-    let ratingCount = searchForKey(data, "ratingCount");
-    if (searchForKey(data, 'ratingValue') == undefined) {
-      ratingCount.innerHTML = "";
+    if(rating == undefined){
+      let span = document.createElement('span');
+      span.innerHTML = 'No Reviews';
+      ratingContainer.appendChild(span);
     } 
     else {
-      ratingCount.innerHTML = "(" + ratingCount + ")";
+      let span = document.createElement('span');
+      let numOfReviews = document.createElement('span');
+      span.innerHTML = rating;
+      if (ratingCounts === undefined) numOfReviews.innerHTML = searchForKey(data, 'reviewCount');
+      else numOfReviews.innerHTML = ratingCounts;
+      ratingContainer.appendChild(span);
+      ratingContainer.appendChild(toImage(rating));
+      ratingContainer.appendChild(numOfReviews);
     }
-    div.appendChild(ratingCount);
+
+    card.appendChild(ratingContainer);
 
     let time = document.createElement('time');
     let totalTime = searchForKey(data, 'totalTime');
@@ -185,6 +163,37 @@ class RecipeCard extends HTMLElement {
     this.shadowRoot.appendChild(styleElem);
   }
 }
+
+function toImage (rating){
+  let image = document.createElement('img');
+  if(rating < 0.5){
+    image.src = 'assets/images/icons/0-star.svg';
+    image.alt = '0 star';
+  }
+  if(rating < 1.5){
+    image.src =  'assets/images/icons/1-star.svg';
+    image.alt = '1 star';
+  }
+  if(rating < 2.5){
+    image.src = 'assets/images/icons/2-star.svg';
+    image.alt = '2 star';
+  }
+  if(rating < 3.5){
+    image.src = 'assets/images/icons/3-star.svg';
+    image.alt = '3 star';
+  }
+  if(rating < 4.5){
+    image.src = 'assets/images/icons/4-star.svg';
+    image.alt = '4 star';
+  }
+  if(rating <= 5){
+    image.src = 'assets/images/icons/5-star.svg';
+    image.alt = '5 star';
+  }
+  return image;
+}
+
+
 
 
 /*********************************************************************/
